@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-ui-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-ui
+  template:
+    metadata:
+      labels:
+        app: react-ui
+    spec:
+      containers:
+      - name: react-ui
+        image: newreactapp.azurecr.io/react-ui-hpa:v1
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "200m"        
+            memory: "256Mi"   
+          limits:
+            cpu: "500m"        
+            memory: "512Mi"  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-ui-service
+spec:
+  selector:
+    app: react-ui   
+  type: ClusterIP    
+  ports:
+    - port: 80        
+      targetPort: 3000
